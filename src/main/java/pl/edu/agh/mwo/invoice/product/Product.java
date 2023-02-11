@@ -19,7 +19,7 @@ public abstract class Product {
         if(price == null ) {
             throw new IllegalArgumentException();
         }
-        if(price.signum() < 0 ) {
+        if(price.signum() < 0 ) {   //can also use price.compareTo(BigDecimal.ZERO)== -1
             throw new IllegalArgumentException();
         }
     }
