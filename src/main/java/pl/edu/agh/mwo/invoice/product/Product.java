@@ -9,6 +9,8 @@ public abstract class Product {
 
     private final BigDecimal taxPercent;
 
+    //throw illegal argument exception
+
     protected Product (String name, BigDecimal price, BigDecimal tax) throws IllegalArgumentException{
         if(name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException();
@@ -39,6 +41,7 @@ public abstract class Product {
     }
 
     public BigDecimal getPriceWithTax() {
+
         return this.price.add(this.price.multiply(this.taxPercent));
     }
 }
