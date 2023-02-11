@@ -14,6 +14,9 @@ public class Invoice {
 
     private Map<Product, Integer> products = new HashMap<>();
 
+
+    //throw illegal argument exception
+
     public void addProduct(Product product) throws IllegalArgumentException{
         if(product == null ) {
             throw new IllegalArgumentException();
@@ -23,6 +26,8 @@ public class Invoice {
 
 
     }
+
+    //throw illegal argument exception
 
     public void addProduct(Product product, Integer quantity) throws IllegalArgumentException{
         if(product == null ) {
