@@ -10,18 +10,20 @@ public abstract class Product {
     private final BigDecimal taxPercent;
 
     protected Product (String name, BigDecimal price, BigDecimal tax) throws IllegalArgumentException{
-        this.name = name;
-        this.price = price;
-        this.taxPercent = tax;   //if(name==null || name.equals("")
         if(name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException();
         }
         if(price == null ) {
             throw new IllegalArgumentException();
         }
-        if(price.signum() < 0 ) {   //can also use price.compareTo(BigDecimal.ZERO)== -1
+        if(price.signum() < 0 ) {
             throw new IllegalArgumentException();
         }
+
+        this.name = name;
+        this.price = price;
+        this.taxPercent = tax;
+
     }
 
     public String getName() {
