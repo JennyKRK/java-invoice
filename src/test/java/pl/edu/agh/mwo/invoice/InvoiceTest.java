@@ -159,7 +159,7 @@ public class InvoiceTest {
     public void textToPrintForEmptyInvoice() {
         String header = String.valueOf(invoice.getNumber());
         List<String> printTextForEmptyInvoice = Arrays.asList(header,"Liczba pozycji: 0");
-        Assert.assertEquals(invoice.getTextToPrint(),printTextForEmptyInvoice);
+        Assert.assertEquals(printTextForEmptyInvoice,invoice.getTextToPrint());
     }
 
     @Test
@@ -169,7 +169,7 @@ public class InvoiceTest {
         String body = "Tablet sztuk: 2 cena 1678";
         String footer = "Liczba pozycji: 1";
         List<String> printTextForInvoiceWith1Product = Arrays.asList(header, body, footer);
-        Assert.assertEquals(invoice.getTextToPrint(),printTextForInvoiceWith1Product);
+        Assert.assertEquals(printTextForInvoiceWith1Product, invoice.getTextToPrint());
     }
 
     @Test
@@ -193,7 +193,7 @@ public class InvoiceTest {
         invoice.addProduct(p,1);
         Map<Product,Integer> products = invoice.getProducts();
         int foundQuantity = products.get(p);
-        Assert.assertEquals(foundQuantity,3);
+        Assert.assertEquals(3, foundQuantity);
     }
 
     @Test
@@ -202,6 +202,20 @@ public class InvoiceTest {
         invoice.addProduct(p,2);
         invoice.addProduct(p,1);
         BigDecimal totalPrice = invoice.getGrossTotal();
-        Assert.assertEquals(totalPrice, BigDecimal.valueOf(5034));
+        Assert.assertEquals(BigDecimal.valueOf(5034), totalPrice);
+    }
+
+    @Test
+    public void duplicatesCheckUnique(){
+        Product p = new TaxFreeProduct("Tablet", new BigDecimal("1678"));
+        Product p2 = new DairyProduct("Milk", new BigDecimal("20"));
+        Product p3 = new DairyProduct("Cheese", new BigDecimal("30"));
+        invoice.addProduct(p,1);
+        invoice.addProduct(p2,3);
+        invoice.addProduct(p,3);
+        invoice.addProduct(p2,4);
+        invoice.addProduct(p3,2);
+        Assert.assertEquals(3,invoice.getProducts().size());
+
     }
 }

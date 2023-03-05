@@ -54,4 +54,40 @@ public class ProductTest {
     public void testProductWithNegativePrice() {
         new TaxFreeProduct("Mandarynki", new BigDecimal("-1.00"));
     }
+
+    @Test
+    public void testTotalPriceForBottle(){
+        Product product = new BottleOfWine("Bottle1",new BigDecimal(100.00));
+        Assert.assertThat(new BigDecimal("128.56"), Matchers.comparesEqualTo(product.getPriceWithTax()));
+     }
+
+    @Test
+    public void testTotalPriceForFuel(){
+        Product product = new FuelCanister("Fuel1",new BigDecimal(100.00));
+        Assert.assertThat(new BigDecimal("105.56"), Matchers.comparesEqualTo(product.getPriceWithTax()));
+    }
+
+    @Test
+    public void testGetTotalTaxFuel() {
+        Product product = new FuelCanister("Fuel1",new BigDecimal(100.00));
+        Assert.assertThat(new BigDecimal("5.56"), Matchers.comparesEqualTo(product.getTax()));
+    }
+
+    @Test
+    public void testGetTotalTaxWine() {
+        Product product = new BottleOfWine("Bottle1",new BigDecimal(100.00));
+        Assert.assertThat(new BigDecimal("28.56"), Matchers.comparesEqualTo(product.getTax()));
+    }
+
+    @Test
+    public void testGetTaxOther() {
+        Product product = new OtherProduct("Ogorki", new BigDecimal("100.0"));
+        Assert.assertThat(new BigDecimal("23"), Matchers.comparesEqualTo(product.getTax()));
+    }
+
+    @Test
+    public void testGetTaxDairy() {
+        Product product = new DairyProduct("Oscypek", new BigDecimal("100.0"));
+        Assert.assertThat(new BigDecimal("8"), Matchers.comparesEqualTo(product.getTax()));
+    }
 }
