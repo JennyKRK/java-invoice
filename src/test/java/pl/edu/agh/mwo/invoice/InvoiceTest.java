@@ -2,7 +2,9 @@ package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -168,5 +170,38 @@ public class InvoiceTest {
         String footer = "Liczba pozycji: 1";
         List<String> printTextForInvoiceWith1Product = Arrays.asList(header, body, footer);
         Assert.assertEquals(invoice.getTextToPrint(),printTextForInvoiceWith1Product);
+    }
+
+    @Test
+    public void textToPrintCheckFooter() {
+        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")),2);
+        invoice.addProduct(new TaxFreeProduct("Smartfon", new BigDecimal("500")),3);
+        String footer = "Liczba pozycji: 2";
+        Assert.assertEquals(footer, invoice.getTextToPrint().get(3));
+    }
+
+    @Test
+    public void textToPrintCheckHeader() {
+        String header = String.valueOf(invoice.getNumber());
+        Assert.assertEquals(header, invoice.getTextToPrint().get(0));
+    }
+
+    @Test
+    public void duplicatesCheckQuantity() {
+        Product p = new TaxFreeProduct("Tablet", new BigDecimal("1678"));
+        invoice.addProduct(p,2);
+        invoice.addProduct(p,1);
+        Map<Product,Integer> products = invoice.getProducts();
+        int foundQuantity = products.get(p);
+        Assert.assertEquals(foundQuantity,3);
+    }
+
+    @Test
+    public void duplicatesCheckTotal() {
+        Product p = new TaxFreeProduct("Tablet", new BigDecimal("1678"));
+        invoice.addProduct(p,2);
+        invoice.addProduct(p,1);
+        BigDecimal totalPrice = invoice.getGrossTotal();
+        Assert.assertEquals(totalPrice, BigDecimal.valueOf(5034));
     }
 }
