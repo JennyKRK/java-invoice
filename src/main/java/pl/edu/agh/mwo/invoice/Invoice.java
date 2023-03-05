@@ -3,7 +3,8 @@ package pl.edu.agh.mwo.invoice;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 import pl.edu.agh.mwo.invoice.product.Product;
 
@@ -49,4 +50,18 @@ public class Invoice {
         return number;
 
     }
+
+    public List<String> getTextToPrint() {
+        List<String> textToPrint = new ArrayList<>();
+        int counter = 0;
+        textToPrint.add(String.valueOf(number));
+        for (Product p: products.keySet()) {
+            textToPrint.add(p.getName() + " sztuk: " + products.get(p) + " cena " + p.getPrice());
+            counter++;
+        }
+        textToPrint.add("Liczba pozycji: " + counter);
+        return textToPrint;
+    }
+
+
 }

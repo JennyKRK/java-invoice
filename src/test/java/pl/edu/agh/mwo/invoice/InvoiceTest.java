@@ -1,6 +1,8 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -127,23 +129,44 @@ public class InvoiceTest {
     }
 
     @Test
-    public void invoiceHasNumber(){
+    public void invoiceHasNumber() {
         int number = invoice.getNumber();
         Assert.assertNotNull(number);
     }
 
     @Test
-    public void invoiceNumberGreaterThan0(){
+    public void invoiceNumberGreaterThan0() {
         int number = invoice.getNumber();
         Assert.assertTrue(number>0);
     }
 
     @Test
-    public void invoiceNumberDifferent(){
+    public void invoiceNumberDifferent() {
         int number1 = invoice.getNumber();
         int number2 = new Invoice().getNumber();
         Assert.assertNotEquals(number1, number2);
     }
 
+    @Test
+    public void textToPrintNotEmpty() {
+        List<String> linesToPrint = invoice.getTextToPrint();
+        Assert.assertNotNull(linesToPrint);
+    }
 
+    @Test
+    public void textToPrintForEmptyInvoice() {
+        String header = String.valueOf(invoice.getNumber());
+        List<String> printTextForEmptyInvoice = Arrays.asList(header,"Liczba pozycji: 0");
+        Assert.assertEquals(invoice.getTextToPrint(),printTextForEmptyInvoice);
+    }
+
+    @Test
+    public void textToPrintForInvoiceWith1Product() {
+        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")),2);
+        String header = String.valueOf(invoice.getNumber());
+        String body = "Tablet sztuk: 2 cena 1678";
+        String footer = "Liczba pozycji: 1";
+        List<String> printTextForInvoiceWith1Product = Arrays.asList(header, body, footer);
+        Assert.assertEquals(invoice.getTextToPrint(),printTextForInvoiceWith1Product);
+    }
 }
