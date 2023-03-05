@@ -145,9 +145,5 @@ public class InvoiceTest {
         Assert.assertNotEquals(number1, number2);
     }
 
-//    @Test
-//    public void testInvoiceNumberIsTheSame(){
-//        int number1 = invoice.getNumber();
-//        int number2 = new Invoice().getNumber();
-//    }
+
 }
