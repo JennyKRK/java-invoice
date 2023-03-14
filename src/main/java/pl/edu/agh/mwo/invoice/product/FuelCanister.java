@@ -15,9 +15,5 @@ public class FuelCanister extends Product {
         return super.getPriceWithTax().add(BigDecimal.valueOf(excise));
     }
 
-    @Override
-    public BigDecimal getTax() {
-        return super.getTax().add(BigDecimal.valueOf(excise));
-    }
 }
 

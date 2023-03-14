@@ -1,10 +1,7 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -132,63 +129,44 @@ public class InvoiceTest {
 
     @Test
     public void invoiceHasNumber() {
-        int number = invoice.getNumber();
+        int number = invoice.getInvoiceNumber();
         Assert.assertNotNull(number);
     }
 
     @Test
     public void invoiceNumberGreaterThan0() {
-        int number = invoice.getNumber();
+        int number = invoice.getInvoiceNumber();
         Assert.assertTrue(number>0);
     }
 
     @Test
     public void invoiceNumberDifferent() {
-        int number1 = invoice.getNumber();
-        int number2 = new Invoice().getNumber();
+        int number1 = invoice.getInvoiceNumber();
+        int number2 = new Invoice().getInvoiceNumber();
         Assert.assertNotEquals(number1, number2);
     }
 
     @Test
-    public void textToPrintNotEmpty() {
+    public void checkIfTextToPrintNotEmpty() {
         List<String> linesToPrint = invoice.getTextToPrint();
         Assert.assertNotNull(linesToPrint);
     }
 
     @Test
-    public void textToPrintForEmptyInvoice() {
-        String header = String.valueOf(invoice.getNumber());
-        List<String> printTextForEmptyInvoice = Arrays.asList(header,"Liczba pozycji: 0");
-        Assert.assertEquals(printTextForEmptyInvoice,invoice.getTextToPrint());
+    public void checkIfTextToPrintCorrect() {
+        invoice.addProduct(new TaxFreeProduct("XYZ", new BigDecimal("1500")),2);
+        invoice.addProduct(new TaxFreeProduct("ABC", new BigDecimal("500")),3);
+        ArrayList<String> textToPrint = new ArrayList<>();
+        textToPrint.add(String.valueOf(invoice.getInvoiceNumber()));
+        textToPrint.add("XYZ sztuk: 2 cena razem 3000");
+        textToPrint.add("ABC sztuk: 3 cena razem 1500");
+        textToPrint.add("Liczba pozycji: 2");
+        Assert.assertEquals(textToPrint, invoice.getTextToPrint());
     }
 
     @Test
-    public void textToPrintForInvoiceWith1Product() {
-        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")),2);
-        String header = String.valueOf(invoice.getNumber());
-        String body = "Tablet sztuk: 2 cena 1678";
-        String footer = "Liczba pozycji: 1";
-        List<String> printTextForInvoiceWith1Product = Arrays.asList(header, body, footer);
-        Assert.assertEquals(printTextForInvoiceWith1Product, invoice.getTextToPrint());
-    }
-
-    @Test
-    public void textToPrintCheckFooter() {
-        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")),2);
-        invoice.addProduct(new TaxFreeProduct("Smartfon", new BigDecimal("500")),3);
-        String footer = "Liczba pozycji: 2";
-        Assert.assertEquals(footer, invoice.getTextToPrint().get(3));
-    }
-
-    @Test
-    public void textToPrintCheckHeader() {
-        String header = String.valueOf(invoice.getNumber());
-        Assert.assertEquals(header, invoice.getTextToPrint().get(0));
-    }
-
-    @Test
-    public void duplicatesCheckQuantity() {
-        Product p = new TaxFreeProduct("Tablet", new BigDecimal("1678"));
+    public void checkQuantityWithDuplicates() {
+        Product p = new TaxFreeProduct("XYZ", new BigDecimal("1678"));
         invoice.addProduct(p,2);
         invoice.addProduct(p,1);
         Map<Product,Integer> products = invoice.getProducts();
@@ -197,16 +175,7 @@ public class InvoiceTest {
     }
 
     @Test
-    public void duplicatesCheckTotal() {
-        Product p = new TaxFreeProduct("Tablet", new BigDecimal("1678"));
-        invoice.addProduct(p,2);
-        invoice.addProduct(p,1);
-        BigDecimal totalPrice = invoice.getGrossTotal();
-        Assert.assertEquals(BigDecimal.valueOf(5034), totalPrice);
-    }
-
-    @Test
-    public void duplicatesCheckUnique(){
+    public void checkIfItemsDoNotRepeatWithDuplicates(){
         Product p = new TaxFreeProduct("Tablet", new BigDecimal("1678"));
         Product p2 = new DairyProduct("Milk", new BigDecimal("20"));
         Product p3 = new DairyProduct("Cheese", new BigDecimal("30"));
@@ -216,6 +185,17 @@ public class InvoiceTest {
         invoice.addProduct(p2,4);
         invoice.addProduct(p3,2);
         Assert.assertEquals(3,invoice.getProducts().size());
+    }
 
+    @Test
+    public void checkInvoiceTotalWithDuplicateEntries() {
+        Product p = new TaxFreeProduct("XYZ", new BigDecimal("1678"));
+        Product p2 = new TaxFreeProduct("ABC", new BigDecimal("500"));
+        invoice.addProduct(p,2);
+        invoice.addProduct(p2,1);
+        invoice.addProduct(p,1);
+        invoice.addProduct(p2,1);
+        BigDecimal totalPrice = invoice.getGrossTotal();
+        Assert.assertEquals(BigDecimal.valueOf(6034), totalPrice);
     }
 }

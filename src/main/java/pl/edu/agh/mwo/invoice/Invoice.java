@@ -1,15 +1,13 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.ArrayList;
-import java.util.List;
 
 import pl.edu.agh.mwo.invoice.product.Product;
 
 public class Invoice {
-    private Map<Product, Integer> products = new HashMap<Product, Integer>();
+    private LinkedHashMap<Product, Integer> products = new LinkedHashMap<Product, Integer>();
     private static int nextNumber = 0;
     private final int number = ++ nextNumber;
 
@@ -51,24 +49,26 @@ public class Invoice {
         return totalGross;
     }
 
-    public int getNumber() {
+    public int getInvoiceNumber() {
         return number;
-
     }
 
-    public List<String> getTextToPrint() {
-        List<String> textToPrint = new ArrayList<>();
+    public LinkedHashMap<Product, Integer> getProducts() {
+        return products;
+    }
+
+    public ArrayList<String> getTextToPrint() {
+        ArrayList<String> textToPrint = new ArrayList<>();
         int counter = 0;
         textToPrint.add(String.valueOf(number));
         for (Product p: products.keySet()) {
-            textToPrint.add(p.getName() + " sztuk: " + products.get(p) + " cena " + p.getPrice());
+            int numberOfUnits = products.get(p);
+            BigDecimal totalPrice = p.getPrice().multiply(BigDecimal.valueOf(numberOfUnits));
+            textToPrint.add(p.getName() + " sztuk: " + numberOfUnits + " cena razem " + totalPrice);
             counter++;
         }
         textToPrint.add("Liczba pozycji: " + counter);
         return textToPrint;
     }
 
-    public Map<Product, Integer> getProducts() {
-        return products;
-    }
 }

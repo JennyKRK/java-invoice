@@ -55,39 +55,19 @@ public class ProductTest {
         new TaxFreeProduct("Mandarynki", new BigDecimal("-1.00"));
     }
 
+    //total tax on wine should contain excise (5.56 PLN) and VAT (23%).
     @Test
-    public void testTotalPriceForBottle(){
+    public void testPriceAndPriceGrossWithWineBottle(){
         Product product = new BottleOfWine("Bottle1",new BigDecimal(100.00));
+        Assert.assertThat(new BigDecimal("100"), Matchers.comparesEqualTo(product.getPrice()));
         Assert.assertThat(new BigDecimal("128.56"), Matchers.comparesEqualTo(product.getPriceWithTax()));
-     }
+    }
 
+    // total tax on fuel should contain excise (5.56). Due to new government regulations, Vat on liquid fuel = 0.00 :)
     @Test
-    public void testTotalPriceForFuel(){
+    public void testPriceAndPriceGrossWithFuel(){
         Product product = new FuelCanister("Fuel1",new BigDecimal(100.00));
+        Assert.assertThat(new BigDecimal("100"), Matchers.comparesEqualTo(product.getPrice()));
         Assert.assertThat(new BigDecimal("105.56"), Matchers.comparesEqualTo(product.getPriceWithTax()));
-    }
-
-    @Test
-    public void testGetTotalTaxFuel() {
-        Product product = new FuelCanister("Fuel1",new BigDecimal(100.00));
-        Assert.assertThat(new BigDecimal("5.56"), Matchers.comparesEqualTo(product.getTax()));
-    }
-
-    @Test
-    public void testGetTotalTaxWine() {
-        Product product = new BottleOfWine("Bottle1",new BigDecimal(100.00));
-        Assert.assertThat(new BigDecimal("28.56"), Matchers.comparesEqualTo(product.getTax()));
-    }
-
-    @Test
-    public void testGetTaxOther() {
-        Product product = new OtherProduct("Ogorki", new BigDecimal("100.0"));
-        Assert.assertThat(new BigDecimal("23"), Matchers.comparesEqualTo(product.getTax()));
-    }
-
-    @Test
-    public void testGetTaxDairy() {
-        Product product = new DairyProduct("Oscypek", new BigDecimal("100.0"));
-        Assert.assertThat(new BigDecimal("8"), Matchers.comparesEqualTo(product.getTax()));
     }
 }
